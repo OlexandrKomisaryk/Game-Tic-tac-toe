@@ -15,9 +15,14 @@ cout << line << endl;
 cout << "|" << filed[6] << "|" << filed[7] << "|" << filed[8] << "|" << endl;
 }
 
-char Tic_tac_toe::PlaySymbol()
+
+char Tic_tac_toe::PeopleSymbol()
 {
-	return play % 2 == 0 ? first_symbol : second_symbol;
+	return PlaysFirst % 2 == 0 ? first_symbol : second_symbol;
+}
+char Tic_tac_toe::CompSymbol()
+{
+	return PeopleSymbol() == first_symbol ? second_symbol : first_symbol;
 }
 
 bool Tic_tac_toe::IsEmpty(int index)
@@ -50,12 +55,22 @@ bool Tic_tac_toe::Vin(char symbol)
 	{
 		temp++;
 	}
-	if (temp <= 0)
-		return false;
-	else
+		return temp <= 0 ? false : true;
+}
+
+void Tic_tac_toe::ShowVin()
+{
+	if (Vin(CompSymbol()))
 	{
-		cout << "Vin symvol: " << symbol << endl;
-		return true;
+		cout << "Vin symbol: " << CompSymbol() << ". Won the computer!\n";
+	}
+	else if (Vin(PeopleSymbol()))
+	{
+		cout << "Vin symbol: " << PeopleSymbol() << ". Won the " << human_name << "!\n";
+	}
+	else if (Full())
+	{
+		cout << "The game ended with a draw.\n";
 	}
 }
 
@@ -74,7 +89,7 @@ void Tic_tac_toe::ShowLow()
 {
 	char ch = '|';
 	string gap_line(11, ' ');
-	cout << "Each digit corresponds to the number in the game field\n";
+	cout << "Each digit corresponds to the number in the game field.\n";
 	cout << "In order to insert a symbol into a cell, press the corresponding digit.\n\n";
 	cout << gap_line << ch << 7 << ch << 8 << ch << 9 << ch << endl;
 	cout << gap_line << "-------" << endl;
@@ -86,16 +101,39 @@ void Tic_tac_toe::ShowLow()
 
 void Tic_tac_toe::CompMove()
 {
-	srand(time(NULL));
-	int temp = 0;
-	while (temp == 0)
+	if (!NextMoveVin(CompSymbol()) && !(NextMoveVin(PeopleSymbol())))
+	switch (lv)
 	{
-		coord = rand() % SIZE;
-		if (IsEmpty(coord))
+		case EASY:
 		{
-			filed[coord] = PlaySymbol();
-			temp = 1;
+			srand(time(NULL));
+			int temp = 0;
+			while (temp == 0)
+			{
+				coord = rand() % SIZE;
+				if (IsEmpty(coord))
+				{
+					filed[coord] = CompSymbol();
+					temp = 1;
+				}
+			}
 		}
+		break;
+		case HARD:
+		{
+			int ArrayPosition[9] = { 4, 0, 2, 6, 8, 1, 3, 5, 7 };//the priorities of the cells on the field
+			for (int i = 0; i < SIZE; i++)
+			{
+				if (IsEmpty(ArrayPosition[i]))
+				{
+					filed[ArrayPosition[i]] = CompSymbol();
+					break;
+				}
+			}
+		}
+		break;
+		default:
+			break;
 	}
 }
 
@@ -127,7 +165,7 @@ void Tic_tac_toe::PeopleMove()
 		}
 		if (_kbhit() && IsEmpty(coord))		//if you pressed the key and the cell is not busy, then adding a 
 		{									//character without _kbhit () will remember the last step of the last
-			filed[coord] = PlaySymbol();	//game of the person and will do it in the next game
+			filed[coord] = PeopleSymbol();	//game of the person and will do it in the next game
 			temp = 1;
 		}
 	}
@@ -140,6 +178,32 @@ void Tic_tac_toe::Move()
 	else
 		CompMove();
 	play++;
+}
+
+bool Tic_tac_toe::NextMoveVin(char checked_char) //If in the next step the computer wins, it does this step. 
+{												 //If the computer does not win in the next step,
+	int i;									     //but a person wins, then the computer blocks its step.
+	for (i = 0; i < SIZE; i++)
+	{
+		if (IsEmpty(i))
+		{
+			filed[i] = checked_char;
+			if (Vin(checked_char)) 
+			{
+				if (checked_char == PeopleSymbol())
+				{
+					filed[i] = CompSymbol();
+				}
+				break;
+			}
+			else
+			{
+				filed[i] = ' ';
+			}
+		}
+	}
+	return (i < SIZE);
+	
 }
 
 void Tic_tac_toe::Clear()

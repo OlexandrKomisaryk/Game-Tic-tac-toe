@@ -1,0 +1,42 @@
+#include"Tic_tac_toe.h"
+
+int main()
+{
+	Tic_tac_toe game;
+	int WhoPlaysFirst;//if the number is divided by 2, then the first person plays
+	int level;
+
+	game.ShowLow();
+	while (true)
+	{
+		cout << " If you want to play first, enter a even number, the second - odd number, enter -100 to complete\n";
+		cin >> WhoPlaysFirst;
+		if (WhoPlaysFirst == -100)
+			break;
+
+		cout << "Enter the level of difficulty of the game, 1 is simple, 2 is difficult\n";
+		cin >> level;
+
+		if (level == 2)
+			game.SetLevel(Tic_tac_toe::Level::HARD);
+		else 
+			game.SetLevel(Tic_tac_toe::Level::EASY);
+
+		game.SetPlaysFirst(WhoPlaysFirst);
+		system("cls");
+		game.Clear();
+		game.Show();
+
+		while ((!game.Vin('X')) && (!game.Vin('O')) && (!game.Full()))
+		{
+			game.Move();
+			system("cls");
+			game.Show();
+			if (game.Vin('X'))
+				cout << "Vin symbol : X\n";
+			else if (game.Vin('O'))
+				cout << "Vin symbol : O\n";
+		}
+	}
+	return 0;
+}
