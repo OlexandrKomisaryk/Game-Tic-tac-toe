@@ -1,7 +1,11 @@
 #include"Tic_tac_toe.h"
+#include<fstream>
 
 int main()
 {
+	string path = "E://C++//Tic_Tac_Toe//result.txt";
+	ofstream fout(path);
+
 	Tic_tac_toe game;
 	int WhoPlaysFirst;//if the number is divided by 2, then the first person plays
 	int level;
@@ -31,16 +35,27 @@ int main()
 		game.SetPlaysFirst(WhoPlaysFirst);
 		system("cls");
 		game.Clear();
-		game.Show();
+		game.ShowField(&cout);
 
+		if (fout.is_open())
+		{
+			fout << name << " vs Computer\n\n";
+		}
 		while ((!game.Vin(game.CompSymbol())) && (!game.Vin(game.PeopleSymbol())) && (!game.Full()))
 		{
 			game.Move();
 			system("cls");
-			game.Show();
+			game.ShowField(&cout);
 			cout << endl;
-			game.ShowVin();
+			game.ShowVin(&cout);
+			if (fout.is_open())
+			{
+				game.ShowField(&fout);
+				fout << "#######\n";
+				game.ShowVin(&fout);
+			}
 		}
+		fout.close();
 	}
 	return 0;
 }

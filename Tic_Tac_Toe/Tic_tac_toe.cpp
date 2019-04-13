@@ -2,17 +2,17 @@
 
 Tic_tac_toe::Tic_tac_toe()
 {
-	filed.resize(SIZE,' ');
+	field.resize(SIZE,' ');
 }
 
-void Tic_tac_toe::Show()
-{
+void Tic_tac_toe::ShowField(ostream *out) //The method takes the pointer to class ostream so that we can pass the link
+{										  //to the object child-class ofstream and work with the files.
 string line(7, '-');
-cout << "|" << filed[0] << "|" << filed[1] << "|" << filed[2] << "|" << endl;
-cout << line << endl;
-cout << "|" << filed[3] << "|" << filed[4] << "|" << filed[5] << "|" << endl;
-cout << line << endl;
-cout << "|" << filed[6] << "|" << filed[7] << "|" << filed[8] << "|" << endl;
+*out << "|" << field[0] << "|" << field[1] << "|" << field[2] << "|" << endl;
+*out << line << endl;
+*out << "|" << field[3] << "|" << field[4] << "|" << field[5] << "|" << endl;
+*out << line << endl;
+*out << "|" << field[6] << "|" << field[7] << "|" << field[8] << "|" << endl;
 }
 
 
@@ -27,7 +27,7 @@ char Tic_tac_toe::CompSymbol()
 
 bool Tic_tac_toe::IsEmpty(int index)
 {
-	return (filed[index] == ' ');
+	return (field[index] == ' ');
 }
 
 bool Tic_tac_toe::Vin(char symbol)
@@ -35,42 +35,42 @@ bool Tic_tac_toe::Vin(char symbol)
 	int temp = 0;
 	for (int i = 0; i < SIZE; i += 3)
 	{
-		if (filed[i] == symbol && filed[i + 1] == symbol &&  filed[i + 2] == symbol)
+		if (field[i] == symbol && field[i + 1] == symbol &&  field[i + 2] == symbol)
 		{
 			temp++;
 		}
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		if (filed[i] == symbol && filed[i + 3] == symbol && filed[i + 6] == symbol)
+		if (field[i] == symbol && field[i + 3] == symbol && field[i + 6] == symbol)
 		{
 			temp++;
 		}
 	}
-	if (filed[0] == symbol && filed[4] == symbol && filed[8] == symbol)
+	if (field[0] == symbol && field[4] == symbol && field[8] == symbol)
 	{
 		temp++;
 	}
-	if (filed[2] == symbol && filed[4] == symbol && filed[6] == symbol)
+	if (field[2] == symbol && field[4] == symbol && field[6] == symbol)
 	{
 		temp++;
 	}
 		return temp <= 0 ? false : true;
 }
 
-void Tic_tac_toe::ShowVin()
+void Tic_tac_toe::ShowVin(ostream *out)
 {
 	if (Vin(CompSymbol()))
 	{
-		cout << "Vin symbol: " << CompSymbol() << ". Won the computer!\n";
+		*out << "Vin symbol: " << CompSymbol() << ". Won the computer!\n";
 	}
 	else if (Vin(PeopleSymbol()))
 	{
-		cout << "Vin symbol: " << PeopleSymbol() << ". Won the " << human_name << "!\n";
+		*out << "Vin symbol: " << PeopleSymbol() << ". Won the " << human_name << "!\n";
 	}
 	else if (Full())
 	{
-		cout << "The game ended with a draw.\n";
+		*out << "The game ended with a draw.\n";
 	}
 }
 
@@ -79,7 +79,7 @@ bool Tic_tac_toe::Full()
 	int temp = 0;
 	for (int i = 0; i < SIZE; i++)
 	{
-		if (filed[i] != ' ')
+		if (field[i] != ' ')
 			temp++;
 	}
 	return (temp == 9) ? true : false;
@@ -113,7 +113,7 @@ void Tic_tac_toe::CompMove()
 				coord = rand() % SIZE;
 				if (IsEmpty(coord))
 				{
-					filed[coord] = CompSymbol();
+					field[coord] = CompSymbol();
 					temp = 1;
 				}
 			}
@@ -126,7 +126,7 @@ void Tic_tac_toe::CompMove()
 			{
 				if (IsEmpty(ArrayPosition[i]))
 				{
-					filed[ArrayPosition[i]] = CompSymbol();
+					field[ArrayPosition[i]] = CompSymbol();
 					break;
 				}
 			}
@@ -165,7 +165,7 @@ void Tic_tac_toe::PeopleMove()
 		}
 		if (_kbhit() && IsEmpty(coord))		//if you pressed the key and the cell is not busy, then adding a 
 		{									//character without _kbhit () will remember the last step of the last
-			filed[coord] = PeopleSymbol();	//game of the person and will do it in the next game
+			field[coord] = PeopleSymbol();	//game of the person and will do it in the next game
 			temp = 1;
 		}
 	}
@@ -187,18 +187,18 @@ bool Tic_tac_toe::NextMoveVin(char checked_char) //If in the next step the compu
 	{
 		if (IsEmpty(i))
 		{
-			filed[i] = checked_char;
+			field[i] = checked_char;
 			if (Vin(checked_char)) 
 			{
 				if (checked_char == PeopleSymbol())
 				{
-					filed[i] = CompSymbol();
+					field[i] = CompSymbol();
 				}
 				break;
 			}
 			else
 			{
-				filed[i] = ' ';
+				field[i] = ' ';
 			}
 		}
 	}
@@ -210,7 +210,7 @@ void Tic_tac_toe::Clear()
 {
 	for (int i = 0; i < SIZE; i++)
 	{
-		filed[i] = ' ';
+		field[i] = ' ';
 	}
 }
 

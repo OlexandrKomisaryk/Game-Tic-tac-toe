@@ -15,7 +15,7 @@ public:
 		HARD
 	};
 private:
-	vector<char> filed;
+	vector<char> field;
 	string human_name;
 	char first_symbol = 'X';
 	char second_symbol = 'O';
@@ -26,7 +26,7 @@ private:
 	Level lv;
 public:
 	Tic_tac_toe();
-	void Show();
+	void ShowField(ostream *out);
 	void Clear();
 	void SetPlaysFirst(int val) { PlaysFirst = val; play = val; }
 	void SetLevel(Level lv) { this->lv = lv; }
@@ -34,8 +34,8 @@ public:
 	char CompSymbol();
 	char PeopleSymbol();
 	bool IsEmpty(int index);
-	bool Vin(char symvol);
-	void ShowVin();
+	bool Vin(char symbol);
+	void ShowVin(ostream *out);
 	bool Full();
 	void ShowLow();
 	void CompMove();
